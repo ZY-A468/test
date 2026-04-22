@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booster K1 答题训练</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --ok: #16a34a;
+      --bad: #dc2626;
+      --border: #d8dee9;
+      --soft: #eff6ff;
+      --accent: #06b6d4;
+      --gold: #f59e0b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #e0ecff 0%, var(--bg) 42%, #f8fafc 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    main {
+      width: min(1040px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 56px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 14px;
+    }
+
+    .robot-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      border-radius: 24px;
+      background: radial-gradient(circle at top, rgba(6, 182, 212, 0.18), rgba(37, 99, 235, 0.06));
+      border: 1px solid rgba(37, 99, 235, 0.12);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .robot {
+      position: relative;
+      width: 124px;
+      height: 150px;
+    }
+
+    .robot-head,
+    .robot-body,
+    .robot-arm,
+    .robot-leg,
+    .robot-eye,
+    .robot-antenna,
+    .robot-badge {
+      position: absolute;
+    }
+
+    .robot-head {
+      width: 76px;
+      height: 54px;
+      left: 24px;
+      top: 10px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #dbeafe, #93c5fd);
+      border: 3px solid #1d4ed8;
+    }
+
+    .robot-eye {
+      width: 10px;
+      height: 10px;
+      top: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.9);
+    }
+
+    .robot-eye.left { left: 20px; }
+    .robot-eye.right { right: 20px; }
+
+    .robot-antenna {
+      width: 6px;
+      height: 16px;
+      left: 59px;
+      top: -4px;
+      border-radius: 999px;
+      background: #1d4ed8;
+    }
+
+    .robot-antenna::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: -4px;
+      top: -8px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid #b45309;
+    }
+
+    .robot-body {
+      width: 88px;
+      height: 64px;
+      left: 18px;
+      top: 72px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #eff6ff, #bfdbfe);
+      border: 3px solid #2563eb;
+    }
+
+    .robot-badge {
+      width: 28px;
+      height: 28px;
+      left: 30px;
+      top: 18px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #fde68a, #f59e0b);
+      border: 2px solid #b45309;
+    }
+
+    .robot-arm {
+      width: 16px;
+      height: 52px;
+      top: 80px;
+      border-radius: 999px;
+      background: #60a5fa;
+      border: 3px solid #1d4ed8;
+    }
+
+    .robot-arm.left { left: 2px; transform: rotate(18deg); }
+    .robot-arm.right { right: 2px; transform: rotate(-18deg); }
+
+    .robot-leg {
+      width: 18px;
+      height: 44px;
+      top: 124px;
+      border-radius: 999px;
+      background: #93c5fd;
+      border: 3px solid #1d4ed8;
+    }
+
+    .robot-leg.left { left: 38px; }
+    .robot-leg.right { right: 38px; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 44px);
+      letter-spacing: -0.04em;
+    }
+
+    .notice {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 780px;
+    }
+
+    .toolbar, .card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(216, 222, 233, 0.9);
+      box-shadow: 0 16px 40px rgba(37, 99, 235, 0.08);
+      border-radius: 20px;
+    }
+
+    .name-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 180px auto;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 16px;
+      align-items: center;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px;
+      margin-bottom: 18px;
+      position: sticky;
+      top: 12px;
+      z-index: 2;
+      backdrop-filter: blur(12px);
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      padding: 11px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    button:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    button.secondary { background: #111827; }
+    button.secondary:hover { background: #374151; }
+
+    .questions {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .card h2 {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin: 0 0 12px;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .score-tag {
+      flex: 0 0 auto;
+      color: var(--primary);
+      background: var(--soft);
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    textarea, select, input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font: inherit;
+      background: #fff;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    textarea:focus, select:focus, input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .result {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      display: none;
+      line-height: 1.7;
+    }
+
+    .result.show { display: block; }
+    .result.correct { border-color: rgba(22, 163, 74, 0.35); background: #f0fdf4; }
+    .result.wrong { border-color: rgba(220, 38, 38, 0.35); background: #fef2f2; }
+    .good { color: var(--ok); font-weight: 700; }
+    .bad { color: var(--bad); font-weight: 700; }
+
+    .answer {
+      margin-top: 8px;
+      color: #374151;
+      white-space: pre-wrap;
+    }
+
+    .summary {
+      display: none;
+      margin-bottom: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #111827;
+      color: #fff;
+      line-height: 1.7;
+    }
+
+    .report-page {
+      display: none;
+      padding: 28px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(239,246,255,0.94));
+      overflow: hidden;
+      position: relative;
+    }
+
+    .report-page::before,
+    .report-page::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(37, 99, 235, 0.08);
+      pointer-events: none;
+    }
+
+    .report-page::before {
+      width: 180px;
+      height: 180px;
+      top: -70px;
+      right: -50px;
+    }
+
+    .report-page::after {
+      width: 120px;
+      height: 120px;
+      left: -30px;
+      bottom: -40px;
+    }
+
+    .report-page.show {
+      display: block;
+    }
+
+    .report-page > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .report-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .report-title h2 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .report-seal {
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: #92400e;
+      background: #fef3c7;
+      border: 1px solid #fbbf24;
+      font-weight: 800;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .report-item {
+      border: 1px solid rgba(37, 99, 235, 0.14);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 10px 28px rgba(37, 99, 235, 0.08);
+    }
+
+    .report-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .report-value {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .encourage {
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--soft);
+      color: #1e3a8a;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .report-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .summary.show { display: block; }
+
+    @media (max-width: 640px) {
+      main { width: min(100% - 20px, 1040px); padding-top: 22px; }
+      .hero { grid-template-columns: 1fr; }
+      .toolbar { position: static; }
+      .name-bar { grid-template-columns: 1fr; }
+      .report-title { flex-direction: column; align-items: flex-start; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Booster K1 答题训练</h1>
+        <p class="notice">本软件依据习题内容生成答题训练；每次点击“重新随机出题”都会更换题目顺序。简答题按关键词自动评分，答题结束后会为错题生成解析与标准答案。</p>
+      </div>
+      <div class="robot-box" aria-hidden="true">
+        <div class="robot">
+          <div class="robot-antenna"></div>
+          <div class="robot-head">
+            <span class="robot-eye left"></span>
+            <span class="robot-eye right"></span>
+          </div>
+          <div class="robot-arm left"></div>
+          <div class="robot-arm right"></div>
+          <div class="robot-body"><span class="robot-badge"></span></div>
+          <div class="robot-leg left"></div>
+          <div class="robot-leg right"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card name-bar" id="nameBar">
+      <input id="studentName" type="text" placeholder="请输入姓名，用于生成答题报告" maxlength="20" />
+      <input id="attemptCount" type="number" placeholder="答题次数" min="1" max="999" />
+      <span class="pill" id="timeSpent">作答时间：00:00</span>
+    </section>
+
+    <section id="quizPage">
+      <section class="toolbar">
+        <div class="stats">
+          <span class="pill" id="questionCount">题目：0</span>
+          <span class="pill" id="totalScore">总分：0</span>
+          <span class="pill" id="currentScore">得分：未提交</span>
+        </div>
+        <div>
+          <button type="button" id="submitBtn">提交并评分</button>
+          <button type="button" class="secondary" id="resetBtn">重新随机出题</button>
+        </div>
+      </section>
+
+      <section class="summary" id="summary"></section>
+      <form class="questions" id="quizForm"></form>
+    </section>
+
+    <section class="card report-page" id="reportPage">
+      <div class="report-title">
+        <h2>答题报告</h2>
+        <span class="report-seal">Booster K1 Training</span>
+      </div>
+      <div class="encourage" id="encourageText"></div>
+      <div class="report-grid">
+        <div class="report-item">
+          <div class="report-label">姓名</div>
+          <div class="report-value" id="reportName">-</div>
+        </div>
+        <div class="report-item">
+          <div class="report-label">答题次数</div>
+          <div class="report-value" id="reportAttempt">-</div>
+        </div>
+        <div class="report-item">
+          <div class="report-label">分数</div>
+          <div class="report-value" id="reportScore">-</div>
+        </div>
+        <div class="report-item">
+          <div class="report-label">评级</div>
+          <div class="report-value" id="reportLevel">-</div>
+        </div>
+        <div class="report-item">
+          <div class="report-label">作答时间</div>
+          <div class="report-value" id="reportDuration">-</div>
+        </div>
+      </div>
+      <section class="summary show" id="reportSummary"></section>
+      <div class="report-actions">
+        <button type="button" id="backBtn">返回查看答卷</button>
+        <button type="button" class="secondary" id="restartBtn">重新开始答题</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const rawQuestions = [
+      { type: 'short', score: 6, question: 'ssh 链接机器人的基本代码', answer: 'Ssh booster@192.168.10.102', keywords: ['ssh', 'booster@192.168.10.102'] },
+      { type: 'short', score: 6, question: '上传文件的路径以及代码', answer: 'Scp Booster_k1_5v5_demo(相应路径) booster@192.168.10.102homeboosterWorkspace', keywords: ['scp', 'Booster_k1_5v5_demo', 'booster@192.168.10.102', 'home', 'booster', 'Workspace'] },
+      { type: 'short', score: 6, question: '修改裁判机 ip 的两个位置', answer: 'Booster_k1_5v5_demo srcbrainconfigconfig.yaml 与 Booster_k1_5v5_demosrcgame_controlerlauchconfig.py', keywords: ['config.yaml', 'game_controler', 'lauchconfig.py'] },
+      { type: 'short', score: 6, question: '基础的文件查看方法，以及保存流程', answer: 'nano 文件名，ctrl+o保存，enter确认，ctrl+x退出', keywords: ['nano', 'ctrl+o', 'enter', 'ctrl+x'] },
+      { type: 'short', score: 6, question: 'rerun 测距的基本步骤', answer: '进入srcbrianconfigconfig.yaml，修改true和false以及本地ip（如果无法打开一定要检查班底ip）打开终端启动rerun，进行代码build，以及start，可弹出窗口', keywords: ['config.yaml', 'true', 'false', '本地ip', 'rerun', 'build', 'start'] },
+      { type: 'short', score: 6, question: '调距的两个点的坐标', answer: '十字近点x为3.1，远点y为0', keywords: ['x', '3.1', 'y', '0'] },
+      { type: 'short', score: 6, question: '调距文件名称以及路径', answer: 'vision.yaml  optboostervision.yaml 以及 homeboosterWorkspace Booster_k1_5v5_demosrcvisionconfigvision.yaml', keywords: ['vision.yaml', 'opt', 'booster', 'Workspace', 'srcvisionconfig'] },
+      { type: 'short', score: 6, question: '调距的两个变量名', answer: 'Pich和yaw', keywords: ['pich', 'yaw'] },
+      { type: 'short', score: 6, question: '上场前必须检查的三个 tail 以及需要在哪个路径检查', answer: '在demo路径，使用tail -f brain.log; tail -f game_controler.log; tail -f vision.log，vision不断输出才是正常状态，brain也是，其能显示队号等信息（最后检查），game_controler能显示裁判机是否连通相关内容', keywords: ['demo', 'tail -f brain.log', 'tail -f game_controler.log', 'tail -f vision.log', 'vision', 'brain', 'game_controler'] },
+      { type: 'short', score: 6, question: '机器人摔倒后的两个流程', answer: '喊裁判 pickup +redblue + 编号；我方手柄操纵员立刻准备使用相应手柄lt+a重新定位，如果关节掉了需要重启；定位好了交给裁判机接管并立刻喊裁判redblue +号码 +ready', keywords: ['pickup', 'redblue', '编号', 'lt+a', '重新定位', 'ready'] },
+      { type: 'short', score: 8, question: '在运行 .buid.sh 和 start.sh 还有一个很重要的 .sh 需要运行是什么？', answer: 'start_realsense.sh，他的作用是启动realsense相机，以防万一', keywords: ['start_realsense.sh', 'realsense', '相机'] },
+      { type: 'short', score: 8, question: '如果使用终端打开文件，想要改写，但是其显示没有改写权限怎么办？', answer: '退出文件，不使用nano打开，使用sudo nano 文件名 打开，原理是sudo相当于以管理员（最高权限）身份运行', keywords: ['退出', 'sudo nano', '管理员', '最高权限'] },
+      { type: 'short', score: 8, question: '我们的操作安排是？', answer: '一个手柄掌控员杨子涵，机器人掌控员四个，分为4个顺位，第一顺位李轩屹，第二顺位赵颢涵，第三顺位聂子云，第四顺位康宇轩，第一顺位优先拿机器人，第四、三顺位优先给裁判报抬机器人的信息，手柄操纵员随时准备操作手柄，并且要在机器人倒地后立刻找到对应编号手柄', keywords: ['杨子涵', '李轩屹', '赵颢涵', '聂子云', '康宇轩', '顺位', '手柄', '裁判'] },
+      { type: 'short', score: 8, question: '我们的机器人区分规划是？', answer: '每台机器人覆盖超大姓名贴（纸用胶带贴）上面标注机器人编号，以及队员编号，大小要求10m内可清晰见，替补队员则写补', keywords: ['姓名贴', '机器人编号', '队员编号', '10m', '替补', '补'] },
+      { type: 'judge', score: 4, question: '上场是否必须检查三个 tail？start.sh 后输出的结果能满足检查需求', answer: '错误。上场必须检查三个 tail，不能只依靠 start.sh 后输出的结果。', correct: '错' },
+      { type: 'judge', score: 4, question: '机器人摔倒直接上场拿机器人', answer: '错误。机器人摔倒后应先喊裁判 pickup + 队伍颜色 + 编号，待裁判允许后再处理。', correct: '错' }
+    ];
+
+    let questions = [];
+    let startTime = Date.now();
+    let timerId = null;
+
+    const form = document.querySelector('#quizForm');
+    const summary = document.querySelector('#summary');
+    const currentScore = document.querySelector('#currentScore');
+    const questionCount = document.querySelector('#questionCount');
+    const totalScore = document.querySelector('#totalScore');
+    const studentName = document.querySelector('#studentName');
+    const attemptCount = document.querySelector('#attemptCount');
+    const timeSpent = document.querySelector('#timeSpent');
+    const quizPage = document.querySelector('#quizPage');
+    const reportPage = document.querySelector('#reportPage');
+    const reportName = document.querySelector('#reportName');
+    const reportAttempt = document.querySelector('#reportAttempt');
+    const reportScore = document.querySelector('#reportScore');
+    const reportLevel = document.querySelector('#reportLevel');
+    const reportDuration = document.querySelector('#reportDuration');
+    const reportSummary = document.querySelector('#reportSummary');
+    const encourageText = document.querySelector('#encourageText');
+
+    function shuffle(items) {
+      return [...items].sort(() => Math.random() - 0.5);
+    }
+
+    function formatDuration(ms) {
+      const seconds = Math.max(0, Math.floor(ms / 1000));
+      const minuteText = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const secondText = String(seconds % 60).padStart(2, '0');
+      return `${minuteText}:${secondText}`;
+    }
+
+    function updateTimer() {
+      timeSpent.textContent = `作答时间：${formatDuration(Date.now() - startTime)}`;
+    }
+
+    function restartTimer() {
+      startTime = Date.now();
+      clearInterval(timerId);
+      updateTimer();
+      timerId = setInterval(updateTimer, 1000);
+    }
+
+    function getRating(percent) {
+      if (percent >= 90) {
+        return { level: '优秀', text: '太棒了！你已经掌握得很扎实，继续保持这种状态。' };
+      }
+      if (percent >= 75) {
+        return { level: '良好', text: '表现不错！再复习几道错题，就能冲到优秀。' };
+      }
+      if (percent >= 60) {
+        return { level: '合格', text: '基础已经有了，建议重点回看错题解析，把关键词记牢。' };
+      }
+      return { level: '继续努力', text: '不要灰心！先把错题答案看一遍，再重新随机练习一次。' };
+    }
+
+    function normalize(value) {
+      return String(value)
+        .toLowerCase()
+        .replace(/\s+/g, '')
+        .replace(/[，。；;：:、（）()【】\[\]“”"'‘’,.!?？！+\-_]/g, '');
+    }
+
+    function getBigrams(text) {
+      const normalized = normalize(text);
+      if (normalized.length < 2) {
+        return normalized ? [normalized] : [];
+      }
+
+      const parts = [];
+      for (let index = 0; index < normalized.length - 1; index += 1) {
+        parts.push(normalized.slice(index, index + 2));
+      }
+      return parts;
+    }
+
+    function fuzzyIncludes(answer, keyword) {
+      const normalizedAnswer = normalize(answer);
+      const normalizedKeyword = normalize(keyword);
+
+      if (!normalizedAnswer || !normalizedKeyword) {
+        return false;
+      }
+
+      if (normalizedAnswer.includes(normalizedKeyword) || normalizedKeyword.includes(normalizedAnswer)) {
+        return true;
+      }
+
+      const keywordBigrams = getBigrams(normalizedKeyword);
+      if (!keywordBigrams.length) {
+        return false;
+      }
+
+      const hitCount = keywordBigrams.filter(part => normalizedAnswer.includes(part)).length;
+      return hitCount / keywordBigrams.length >= 0.6;
+    }
+
+    function renderQuiz() {
+      questions = shuffle(rawQuestions);
+      form.innerHTML = '';
+      summary.classList.remove('show');
+      quizPage.style.display = 'block';
+      reportPage.classList.remove('show');
+      currentScore.textContent = '得分：未提交';
+      questionCount.textContent = `题目：${questions.length}`;
+      totalScore.textContent = `总分：${questions.reduce((sum, item) => sum + item.score, 0)}`;
+      restartTimer();
+
+      questions.forEach((item, index) => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <h2><span>${index + 1}. ${item.question}</span><span class="score-tag">${item.score}分</span></h2>
+          ${item.type === 'judge'
+            ? `<select name="answer-${index}"><option value="">请选择</option><option value="对">对</option><option value="错">错</option></select>`
+            : `<textarea name="answer-${index}" placeholder="请输入你的答案，系统会按关键词自动评分"></textarea>`}
+          <div class="result" id="result-${index}"></div>
+        `;
+        form.appendChild(card);
+      });
+    }
+
+    function gradeShortAnswer(item, userAnswer) {
+      const hitKeywords = item.keywords.filter(keyword => fuzzyIncludes(userAnswer, keyword));
+      const ratio = item.keywords.length ? hitKeywords.length / item.keywords.length : 0;
+      const score = Math.round(item.score * Math.min(1, ratio + 0.12));
+      return { score, hitKeywords, passed: ratio >= 0.5 };
+    }
+
+    function submitQuiz() {
+      const name = studentName.value.trim();
+      const attempt = attemptCount.value.trim();
+      if (!name) {
+        alert('请先输入姓名再提交。');
+        studentName.focus();
+        return;
+      }
+
+      if (!attempt || Number(attempt) < 1) {
+        alert('请先输入正确的答题次数再提交。');
+        attemptCount.focus();
+        return;
+      }
+
+      let score = 0;
+      const total = questions.reduce((sum, item) => sum + item.score, 0);
+      const wrongItems = [];
+
+      questions.forEach((item, index) => {
+        const field = form.elements[`answer-${index}`];
+        const userAnswer = field.value.trim();
+        const result = document.querySelector(`#result-${index}`);
+        let itemScore = 0;
+        let isCorrect = false;
+        let detail = '';
+
+        if (item.type === 'judge') {
+          isCorrect = userAnswer === item.correct;
+          itemScore = isCorrect ? item.score : 0;
+          detail = isCorrect ? '判断正确。' : `正确答案：${item.correct}`;
+        } else {
+          const graded = gradeShortAnswer(item, userAnswer);
+          itemScore = graded.score;
+          isCorrect = graded.passed;
+          detail = `命中关键词：${graded.hitKeywords.length ? graded.hitKeywords.join('、') : '无'}；关键词得分：${itemScore}/${item.score}`;
+        }
+
+        score += itemScore;
+        result.className = `result show ${isCorrect ? 'correct' : 'wrong'}`;
+        result.innerHTML = `
+          <div class="${isCorrect ? 'good' : 'bad'}">${isCorrect ? '正确/基本正确' : '需要复习'}：本题得 ${itemScore} 分</div>
+          <div>${detail}</div>
+          ${isCorrect ? '' : `<div class="answer"><strong>错题解析/标准答案：</strong>${item.answer}</div>`}
+        `;
+
+        if (!isCorrect) {
+          wrongItems.push(`${index + 1}. ${item.question}`);
+        }
+      });
+
+      const percent = total ? Math.round((score / total) * 100) : 0;
+      const rating = getRating(percent);
+      const durationText = formatDuration(Date.now() - startTime);
+      clearInterval(timerId);
+
+      currentScore.textContent = `得分：${score}/${total}`;
+      summary.classList.add('show');
+      summary.innerHTML = wrongItems.length
+        ? `本次得分 <strong>${score}/${total}</strong>。错题共 ${wrongItems.length} 题：<br>${wrongItems.join('<br>')}`
+        : `本次得分 <strong>${score}/${total}</strong>。全部答对，继续保持。`;
+
+      reportName.textContent = name;
+      reportAttempt.textContent = `第 ${attempt} 次`;
+      reportScore.textContent = `${score}/${total}`;
+      reportLevel.textContent = rating.level;
+      reportDuration.textContent = durationText;
+      encourageText.textContent = rating.text;
+      reportSummary.innerHTML = wrongItems.length
+        ? `本次作答共有 ${wrongItems.length} 道题需要重点复习：<br>${wrongItems.join('<br>')}`
+        : '本次作答没有错题，说明你对当前题库掌握得很好。';
+
+      quizPage.style.display = 'none';
+      reportPage.classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelector('#submitBtn').addEventListener('click', submitQuiz);
+    document.querySelector('#resetBtn').addEventListener('click', renderQuiz);
+    document.querySelector('#backBtn').addEventListener('click', () => {
+      reportPage.classList.remove('show');
+      quizPage.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.querySelector('#restartBtn').addEventListener('click', () => {
+      reportPage.classList.remove('show');
+      renderQuiz();
+    });
+
+    renderQuiz();
+  </script>
+</body>
+</html>
